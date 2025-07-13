@@ -1,0 +1,111 @@
+name: CMAKE TESTS - GTEST (Multi-platform)
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev, main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Run vcpkg Setting
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgJsonGlob: '**/vcpkg.json'
+          runVcpkgInstall: true
+
+      - name: Setup MSVC Environment (Windows only)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v3
+
+      - name: Install GCC/G++ (Linux only)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y build-essential
+
+      - name: Install clang (macOS only)
+        if: runner.os == 'macOS'
+        run: brew install llvm
+
+      - name: Configure CMake (Debug)
+        run: >
+          cmake -B build 
+          -DG_TEST_FLAGS=ON
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake 
+          -DCMAKE_BUILD_TYPE=Debug 
+          -G "Ninja"
+
+      - name: Build project
+        run: cmake --build build --config Debug
+
+      - name: Upload build directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ runner.os }}
+          path: build/
+
+  test:
+    runs-on: ${{ matrix.os }}
+    needs: build
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC Environment (Windows only)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v3
+
+      - name: Download build directory
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ runner.os }}
+          path: build
+
+      - name: Fix test binary permissions (Linux & macOS)
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          find build -type f -exec chmod +x {} \;
+          echo "----- Executable files in build/ -----"
+          find build -type f -perm -111 -exec ls -l {} \;
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure --build-config Debug
+
+      - name: Run tests and save summary
+        run: |
+          ctest --test-dir build --output-on-failure | tee result.txt
+
+      - name: Show CTest summary in Actions summary
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          echo '### CTest Result Summary' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -n 20 result.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Show CTest summary in Actions summary
+        if: runner.os == 'Windows'
+        run: |
+          echo '### CTest Result Summary' >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          Get-Content result.txt -Tail 20 >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY

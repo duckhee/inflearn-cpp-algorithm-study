@@ -1,0 +1,85 @@
+name: CMAKE TESTS - GTEST
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build-env:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Run vcpkg Setting
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgJsonGlob: '**/vcpkg.json'
+          runVcpkgInstall: true
+
+      - name: Setup Microsoft Environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v3
+
+      - name: Configure CMake (Debug)
+        run: >
+          cmake -B build 
+          -DG_TEST_FLAGS=ON
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DVCPKG_TARGET_TRIPLET=x64-windows
+          -DCMAKE_BUILD_TYPE=Debug 
+          -G "Ninja"
+      - name: Build project
+        run: cmake --build build --config Debug
+
+      - name: Upload build directory
+        uses: actions/upload-artifact@v4
+        with:
+          path: build/
+          name: build
+
+  run-test:
+    runs-on: windows-latest
+    needs: build-env
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Download build directory
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: build
+
+      - name: Setup Microsoft Environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v3
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure --build-config Debug
+
+      - name: Run tests and save summary
+        run: |
+          ctest --test-dir build --output-on-failure | tee result.txt
+
+      - name: Show CTest summary in Actions summary
+        if: always()
+        shell: pwsh
+        run: |
+          echo '### CTest Result Summary' >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          Get-Content result.txt -Tail 20 >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+     
+
+      
