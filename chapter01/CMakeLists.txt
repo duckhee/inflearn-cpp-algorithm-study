@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.27)
+
+add_subdirectory(01-multipleSum)
+add_subdirectory(02-sumOfNaturalNumber)
+add_subdirectory(03-proper-divisor)
