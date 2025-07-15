@@ -12,3 +12,8 @@
  * => 첫 번째 줄에 YES, NO를 출력한다.
  */
 #include "main.h"
+
+
+int main(int argc, char **argv) {
+    return 0;
+}
