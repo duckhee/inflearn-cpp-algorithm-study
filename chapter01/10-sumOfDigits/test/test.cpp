@@ -1,14 +1,33 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-
 #include "main.h"
-
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
-#include <chrono>
-#include <filesystem>
-#include <fstream>
+
+void RunTestLoop(const std::string &filename) {
+    std::ifstream readFile(filename);
+    int loopNumber = 0;
+
+    readFile >> loopNumber;
+
+    int n, num, i, sum, max = -2147000000, res;
+
+    for (int i = 0; i <= loopNumber; i++) {
+        readFile >> num;
+        sum = digit_sum(num);
+        if (sum > max) {
+            max = sum;
+            res = num;
+        } else if (sum == max) {
+            if (num > res) res = num;
+        }
+    }
+
+    std::cout << res;
+    readFile.close();
+}
 
 std::string ReadResultFile(const std::string &filename) {
     std::string result;
@@ -24,18 +43,13 @@ std::string ReadResultFile(const std::string &filename) {
     return result;
 }
 
-TEST(CommonDivisorTest, input_1) {
+TEST(DigitSum, input_1) {
     std::streambuf *original = std::cout.rdbuf();
 
     std::stringstream buffer;
     std::cout.rdbuf(buffer.rdbuf());
 
-    auto start = std::chrono::steady_clock::now();
-
-    CommonDivisor(10);
-
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    RunTestLoop("in1.txt");
 
     std::cout.rdbuf(original);
 
@@ -43,22 +57,15 @@ TEST(CommonDivisorTest, input_1) {
 
     std::string testResult = ReadResultFile("out1.txt");
     EXPECT_EQ(result, testResult);
-
-    EXPECT_LT(duration.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
-
 }
 
-TEST(CommonDivisorTest, input_2) {
+TEST(DigitSum, input_2) {
     std::streambuf *original = std::cout.rdbuf();
 
     std::stringstream buffer;
     std::cout.rdbuf(buffer.rdbuf());
-    auto start = std::chrono::steady_clock::now();
 
-    CommonDivisor(1000);
-
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    RunTestLoop("in2.txt");
 
     std::cout.rdbuf(original);
 
@@ -66,21 +73,15 @@ TEST(CommonDivisorTest, input_2) {
 
     std::string testResult = ReadResultFile("out2.txt");
     EXPECT_EQ(result, testResult);
-
-    EXPECT_LT(duration.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
 }
 
-TEST(CommonDivisorTest, input_3) {
+TEST(DigitSum, input_3) {
     std::streambuf *original = std::cout.rdbuf();
 
     std::stringstream buffer;
     std::cout.rdbuf(buffer.rdbuf());
-    auto start = std::chrono::steady_clock::now();
 
-    CommonDivisor(10000);
-
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    RunTestLoop("in3.txt");
 
     std::cout.rdbuf(original);
 
@@ -88,22 +89,15 @@ TEST(CommonDivisorTest, input_3) {
 
     std::string testResult = ReadResultFile("out3.txt");
     EXPECT_EQ(result, testResult);
-
-    EXPECT_LT(duration.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
-
 }
 
-TEST(CommonDivisorTest, input_4) {
+TEST(DigitSum, input_4) {
     std::streambuf *original = std::cout.rdbuf();
 
     std::stringstream buffer;
     std::cout.rdbuf(buffer.rdbuf());
-    auto start = std::chrono::steady_clock::now();
 
-    CommonDivisor(30000);
-
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    RunTestLoop("in4.txt");
 
     std::cout.rdbuf(original);
 
@@ -111,22 +105,15 @@ TEST(CommonDivisorTest, input_4) {
 
     std::string testResult = ReadResultFile("out4.txt");
     EXPECT_EQ(result, testResult);
-
-    EXPECT_LT(duration.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
-
 }
 
-TEST(CommonDivisorTest, input_5) {
+TEST(DigitSum, input_5) {
     std::streambuf *original = std::cout.rdbuf();
 
     std::stringstream buffer;
     std::cout.rdbuf(buffer.rdbuf());
-    auto start = std::chrono::steady_clock::now();
 
-    CommonDivisor(50000);
-
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    RunTestLoop("in5.txt");
 
     std::cout.rdbuf(original);
 
@@ -134,10 +121,8 @@ TEST(CommonDivisorTest, input_5) {
 
     std::string testResult = ReadResultFile("out5.txt");
     EXPECT_EQ(result, testResult);
-
-    EXPECT_LT(duration.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
-
 }
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
