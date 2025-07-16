@@ -12,7 +12,7 @@ void RunTestLoop(const std::string &filename) {
 
     readFile >> loopNumber;
 
-    int n, num, i, sum, max = -2147000000, res;
+    int num, sum, max = -1, res;
 
     for (int i = 0; i <= loopNumber; i++) {
         readFile >> num;
