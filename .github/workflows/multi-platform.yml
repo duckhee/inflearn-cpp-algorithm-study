@@ -55,7 +55,7 @@ jobs:
         with:
           name: build-${{ runner.os }}
           path: build/
-
+          retention-days: 2
   test:
     runs-on: ${{ matrix.os }}
     needs: build
@@ -93,13 +93,6 @@ jobs:
       - name: Run tests and save summary
         run: |
           ctest --test-dir build --output-on-failure | tee result.txt
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: ctest-results
-          path: result.txt
-          retention-days: 2
 
       - name: Show CTest summary in Actions summary
         if: runner.os == 'Linux' || runner.os == 'macOS'

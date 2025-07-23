@@ -40,11 +40,13 @@ jobs:
       - name: Build project
         run: cmake --build build --config Debug
 
-      - name: Upload build directory
+      - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          path: build/
-          name: build
+          name: ctest-results
+          path: result.txt
+          retention-days: 2
+  
 
   run-test:
     runs-on: windows-latest
@@ -71,13 +73,6 @@ jobs:
       - name: Run tests and save summary
         run: |
           ctest --test-dir build --output-on-failure | tee result.txt
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: ctest-results
-          path: result.txt
-          retention-days: 2
 
       - name: Show CTest summary in Actions summary
         if: always()
