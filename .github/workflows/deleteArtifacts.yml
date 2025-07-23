@@ -28,3 +28,4 @@ jobs:
                 console.log(`Deleted artifact: ${artifact.name}`);
               }
             }
+
