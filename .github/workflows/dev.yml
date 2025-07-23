@@ -45,8 +45,8 @@ jobs:
         with:
           name: ctest-results
           path: result.txt
-          retention-days: 2
-  
+          retention-days: 1
+
 
   run-test:
     runs-on: windows-latest

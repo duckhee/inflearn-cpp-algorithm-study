@@ -55,7 +55,7 @@ jobs:
         with:
           name: build-${{ runner.os }}
           path: build/
-          retention-days: 2
+          retention-days: 1
   test:
     runs-on: ${{ matrix.os }}
     needs: build
