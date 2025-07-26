@@ -43,7 +43,7 @@ jobs:
       - name: Upload build directory
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ runner.os }}
+          name: build
           path: build/
           retention-days: 1
 
