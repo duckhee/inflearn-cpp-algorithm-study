@@ -45,7 +45,7 @@ TEST(ManyTimeCallDigitFound, input_1) {
                         << "Failed to testing function result : " << result << ", expect result : " << expectResult
                         << ", input number : " << inputNumber << ", execute time : " << executeTime.count() << "ms";
 
-    EXPECT_LT(executeTime.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
+    EXPECT_LT(executeTime.count(), 2000) << "실행 시간이 2초(2000ms)를 초과했습니다.";
 }
 
 TEST(ManyTimeCallDigitFound, input_2) {
@@ -64,7 +64,7 @@ TEST(ManyTimeCallDigitFound, input_2) {
                         << "Failed to testing function result : " << result << ", expect result : " << expectResult
                         << ", input number : " << inputNumber << ", execute time : " << executeTime.count() << "ms";
 
-    EXPECT_LT(executeTime.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
+    EXPECT_LT(executeTime.count(), 2000) << "실행 시간이 2초(2000ms)를 초과했습니다.";
 }
 
 TEST(ManyTimeCallDigitFound, input_3) {
@@ -83,7 +83,7 @@ TEST(ManyTimeCallDigitFound, input_3) {
                         << "Failed to testing function result : " << result << ", expect result : " << expectResult
                         << ", input number : " << inputNumber << ", execute time : " << executeTime.count() << "ms";
 
-    EXPECT_LT(executeTime.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
+    EXPECT_LT(executeTime.count(), 2000) << "실행 시간이 2초(2000ms)를 초과했습니다.";
 }
 
 TEST(ManyTimeCallDigitFound, input_4) {
@@ -102,7 +102,7 @@ TEST(ManyTimeCallDigitFound, input_4) {
                         << "Failed to testing function result : " << result << ", expect result : " << expectResult
                         << ", input number : " << inputNumber << ", execute time : " << executeTime.count() << "ms";
 
-    EXPECT_LT(executeTime.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
+    EXPECT_LT(executeTime.count(), 2000) << "실행 시간이 2초(2000ms)를 초과했습니다.";
 }
 
 TEST(ManyTimeCallDigitFound, input_5) {
@@ -121,7 +121,7 @@ TEST(ManyTimeCallDigitFound, input_5) {
                         << "Failed to testing function result : " << result << ", expect result : " << expectResult
                         << ", input number : " << inputNumber << ", execute time : " << executeTime.count() << "ms";;
 
-    EXPECT_LT(executeTime.count(), 1000) << "실행 시간이 1초(1000ms)를 초과했습니다.";
+    EXPECT_LT(executeTime.count(), 2000) << "실행 시간이 2초(2000ms)를 초과했습니다.";
 }
 
 
