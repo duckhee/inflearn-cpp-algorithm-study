@@ -3,7 +3,7 @@ name: CMAKE TESTS - GTEST
 on:
   push:
     branches:
-      - test
+      - dev
   pull_request:
     branches:
       - dev
@@ -40,13 +40,6 @@ jobs:
       - name: Build project
         run: cmake --build build --config Debug
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: ctest-results
-          path: result.txt
-          retention-days: 1
-
 
   run-test:
     runs-on: windows-latest
@@ -73,6 +66,13 @@ jobs:
       - name: Run tests and save summary
         run: |
           ctest --test-dir build --output-on-failure | tee result.txt
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctest-results
+          path: result.txt
+          retention-days: 1
 
       - name: Show CTest summary in Actions summary
         if: always()
